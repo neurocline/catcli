@@ -6,6 +6,7 @@ Catcli filesystem indexer
 """
 
 import os
+import time
 from typing import Tuple, Optional
 
 # local imports
@@ -34,6 +35,7 @@ class Walker:
         self.noder.do_hashing(self.usehash)
         self.debug = debug
         self.lpath = logpath
+        self.lastStatus = time.time() - 1
 
     def index(self,
               path: str,
@@ -185,6 +187,10 @@ class Walker:
         """print progress"""
         if self.debug:
             return
+        # only show status at 10 fps, we can't really read it anyway
+        if self.lastStatus + 0.1 > time.time():
+            return
+        self.lastStatus = time.time()
         if not string:
             # clean
             Logger.progr(' ' * 80)
