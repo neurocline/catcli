@@ -58,7 +58,7 @@ Usage:
     {NAME} tree     [--catalog=<path>] [-aBCVSs] [<path>]
     {NAME} find     [--catalog=<path>] [--format=<fmt>]
                     [-aBCbdVs] [--path=<path>] [<term>]
-    {NAME} index    [--catalog=<path>] [--meta=<meta>...]
+    {NAME} index    [--catalog=<path>] [--meta=<meta>...] [--ignore=<ignore>...]
                     [-aBCcfV] <name> <path>
     {NAME} update   [--catalog=<path>] [-aBCcfV]
                     [--lpath=<path>] <name> <path>
@@ -142,8 +142,9 @@ def cmd_index(args: Dict[str, Any],
         Logger.debug('debug mode enabled')
     walker = Walker(noder, usehash=usehash, debug=debug)
     attr = args['--meta']
+    ignorelist = args['--ignore']
     root = noder.new_storage_node(name, path, top, attr)
-    _, cnt = walker.index(path, root, name)
+    _, cnt = walker.index(path, root, name, ignorelist)
     root.nodesize = root.get_rec_size()
     stop = datetime.datetime.now()
     diff = stop - start

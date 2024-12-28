@@ -7,7 +7,7 @@ Catcli filesystem indexer
 
 import os
 import time
-from typing import Tuple, Optional
+from typing import Tuple, Optional, List
 
 # local imports
 from catcli.noder import Noder
@@ -41,14 +41,21 @@ class Walker:
               path: str,
               parent: NodeAny,
               name: str,
+              ignorelist: List[str],
               storagepath: str = '') -> Tuple[str, int]:
         """
         index a directory and store in tree
         @path: path to index
         @parent: parent node
-        @name: this stoarge name
+        @name: this storage name
+        @ignorelist: list of dirs to ignore
         """
         self._debug(f'indexing starting at {path}')
+        self._debug(f'ignorelist={ignorelist}')
+        if path in ignorelist:
+            self._debug(f'ignoring {path}')
+            return parent, 0
+
         if not parent:
             # create the parent
             parent = self.noder.new_dir_node(name,
@@ -89,7 +96,7 @@ class Walker:
                 nstoragepath = os.sep.join([storagepath, base])
                 if not storagepath:
                     nstoragepath = base
-                _, cnt2 = self.index(sub, dummy, base, nstoragepath)
+                _, cnt2 = self.index(sub, dummy, base, ignorelist, nstoragepath)
                 cnt += cnt2
             break
         self._progress('')
