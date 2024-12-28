@@ -15,13 +15,6 @@ from catcli.utils import fix_badchars, size_to_str, \
     epoch_to_str
 
 
-COLOR_STORAGE = Colors.YELLOW
-COLOR_FILE = Colors.WHITE
-COLOR_DIRECTORY = Colors.BLUE
-COLOR_ARCHIVE = Colors.PURPLE
-COLOR_TS = Colors.CYAN
-COLOR_SIZE = Colors.GREEN
-
 FULLPATH_IN_NAME = True
 
 
@@ -32,17 +25,33 @@ class NativePrinter:
     ARCHIVE = 'archive'
     NBFILES = 'nbfiles'
 
+    COLOR_STORAGE = Colors.YELLOW
+    COLOR_FILE = Colors.WHITE
+    COLOR_DIRECTORY = Colors.BLUE
+    COLOR_ARCHIVE = Colors.PURPLE
+    COLOR_TS = Colors.CYAN
+    COLOR_SIZE = Colors.GREEN
+
+    def get_colors(self):
+        self.COLOR_STORAGE = Colors.YELLOW
+        self.COLOR_FILE = Colors.WHITE
+        self.COLOR_DIRECTORY = Colors.BLUE
+        self.COLOR_ARCHIVE = Colors.PURPLE
+        self.COLOR_TS = Colors.CYAN
+        self.COLOR_SIZE = Colors.GREEN
+
     def print_du(self, node: NodeAny,
                  raw: bool = False) -> None:
         """print du style"""
+        self.get_colors()
         typcast_node(node)
         name = node.get_fullpath()
         size = node.nodesize
 
         line = size_to_str(size, raw=raw).ljust(10, ' ')
-        out = f'{COLOR_SIZE}{line}{Colors.RESET}'
+        out = f'{self.COLOR_SIZE}{line}{Colors.RESET}'
         out += ' '
-        out += f'{COLOR_FILE}{name}{Colors.RESET}'
+        out += f'{self.COLOR_FILE}{name}{Colors.RESET}'
         sys.stdout.write(f'{out}\n')
 
     def print_top(self, pre: str, name: str) -> None:
@@ -53,6 +62,7 @@ class NativePrinter:
                       node: NodeStorage,
                       raw: bool = False) -> None:
         """print a storage node"""
+        self.get_colors()
         # construct name
         name = node.get_name()
         # construct attrs
@@ -78,7 +88,7 @@ class NativePrinter:
 
         # print
         out = f'{pre}{Colors.UND}{self.STORAGE}{Colors.RESET}: '
-        out += f'{COLOR_STORAGE}{name}{Colors.RESET}'
+        out += f'{self.COLOR_STORAGE}{name}{Colors.RESET}'
         if attrs:
             out += f' [{Colors.WHITE}{"|".join(attrs)}{Colors.RESET}]'
         sys.stdout.write(f'{out}\n')
@@ -89,6 +99,7 @@ class NativePrinter:
                    withstorage: bool = False,
                    raw: bool = False) -> None:
         """print a file node"""
+        self.get_colors()
         # construct name
         name = node.get_name()
         storage = node.get_storage_node()
@@ -104,15 +115,15 @@ class NativePrinter:
         # print
         out = []
         out.append(f'{pre}')
-        out.append(f'{COLOR_FILE}{name}{Colors.RESET}')
+        out.append(f'{self.COLOR_FILE}{name}{Colors.RESET}')
         size = 0
         if node.nodesize:
             size = node.nodesize
         line = size_to_str(size, raw=raw)
-        out.append(f'{COLOR_SIZE}{line}{Colors.RESET}')
+        out.append(f'{self.COLOR_SIZE}{line}{Colors.RESET}')
         if node.has_attr('maccess'):
             line = epoch_to_str(node.maccess)
-            out.append(f'{COLOR_TS}{line}{Colors.RESET}')
+            out.append(f'{self.COLOR_TS}{line}{Colors.RESET}')
         if attrs:
             out.append(f'{Colors.GRAY}[{",".join(attrs)}]{Colors.RESET}')
 
@@ -126,6 +137,7 @@ class NativePrinter:
                   withnbchildren: bool = False,
                   raw: bool = False) -> None:
         """print a directory node"""
+        self.get_colors()
         # construct name
         name = node.get_name()
         storage = node.get_storage_node()
@@ -141,15 +153,15 @@ class NativePrinter:
         # print
         out = []
         out.append(f'{pre}')
-        out.append(f'{COLOR_DIRECTORY}{name}{Colors.RESET}')
+        out.append(f'{self.COLOR_DIRECTORY}{name}{Colors.RESET}')
         size = 0
         if node.nodesize:
             size = node.nodesize
         line = size_to_str(size, raw=raw)
-        out.append(f'{COLOR_SIZE}{line}{Colors.RESET}')
+        out.append(f'{self.COLOR_SIZE}{line}{Colors.RESET}')
         if node.has_attr('maccess'):
             line = epoch_to_str(node.maccess)
-            out.append(f'{COLOR_TS}{line}{Colors.RESET}')
+            out.append(f'{self.COLOR_TS}{line}{Colors.RESET}')
         if attrs:
             out.append(f'{Colors.GRAY}[{",".join(attrs)}]{Colors.RESET}')
 
@@ -160,6 +172,6 @@ class NativePrinter:
                       name: str, archive: str) -> None:
         """print an archive"""
         name = fix_badchars(name)
-        out = f'{pre}{COLOR_ARCHIVE}{name}{Colors.RESET} '
+        out = f'{pre}{self.COLOR_ARCHIVE}{name}{Colors.RESET} '
         out += f'{Colors.GRAY}[{self.ARCHIVE}:{archive}]{Colors.RESET}'
         sys.stdout.write(f'{out}\n')
