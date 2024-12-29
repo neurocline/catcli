@@ -150,6 +150,7 @@ class NodeTop(NodeAny):
         recursively traverse tree and return size
         also ensure to update the size on the way
         """
+        self.nodesize = 0
         size = super().get_rec_size()
         self.nodesize = size
         return size
@@ -219,6 +220,7 @@ class NodeDir(NodeAny):
         recursively traverse tree and return size
         also ensure to update the size on the way
         """
+        self.nodesize = 0
         size = super().get_rec_size()
         self.nodesize = size
         return size
@@ -298,6 +300,7 @@ class NodeStorage(NodeAny):
         recursively traverse tree and return size
         also ensure to update the size on the way
         """
+        self.nodesize = 0
         size = super().get_rec_size()
         self.nodesize = size
         return size
